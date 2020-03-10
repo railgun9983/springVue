@@ -7,7 +7,7 @@
 
 4.springboot版本：2.2.4， vue-cli: 4.4.2
 
-5.注意element-ui因为树形表格多选框的问题，修改过源码，配合https://blog.csdn.net/qq_40822000/article/details/104693466一起使用。
+5.注意element-ui因为树形表格多选框的问题，修改过源码，配合https://blog.csdn.net/qq_40822000/article/details/104693466 一起使用。
 
 如果感觉对你有一点帮助请给个star
 
