@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.KLocksDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.KLocks" id="KLocksMap">
+        <result property="schedName" column="SCHED_NAME" jdbcType="VARCHAR"/>
+        <result property="lockName" column="LOCK_NAME" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="KLocksMap">
+        select
+          SCHED_NAME, LOCK_NAME
+        from k_base.k_locks
+        where SCHED_NAME = #{schedName}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="KLocksMap">
+        select
+          SCHED_NAME, LOCK_NAME
+        from k_base.k_locks
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="KLocksMap">
+        select
+          SCHED_NAME, LOCK_NAME
+        from k_base.k_locks
+        <where>
+            <if test="schedName != null and schedName != ''">
+                and SCHED_NAME = #{schedName}
+            </if>
+            <if test="lockName != null and lockName != ''">
+                and LOCK_NAME = #{lockName}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="schedName" useGeneratedKeys="true">
+        insert into k_base.k_locks()
+        values ()
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.k_locks
+        <set>
+        </set>
+        where SCHED_NAME = #{schedName}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.k_locks where SCHED_NAME = #{schedName}
+    </delete>
+
+</mapper>

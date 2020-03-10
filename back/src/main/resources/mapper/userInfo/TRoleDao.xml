@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.TRoleDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.TRole" id="TRoleMap">
+        <result property="roleId" column="ROLE_ID" jdbcType="INTEGER"/>
+        <result property="roleName" column="ROLE_NAME" jdbcType="VARCHAR"/>
+        <result property="remark" column="REMARK" jdbcType="VARCHAR"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="MODIFY_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TRoleMap">
+        select
+          ROLE_ID, ROLE_NAME, REMARK, CREATE_TIME, MODIFY_TIME
+        from k_base.t_role
+        where ROLE_ID = #{roleId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TRoleMap">
+        select
+          ROLE_ID, ROLE_NAME, REMARK, CREATE_TIME, MODIFY_TIME
+        from k_base.t_role
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TRoleMap">
+        select
+          ROLE_ID, ROLE_NAME, REMARK, CREATE_TIME, MODIFY_TIME
+        from k_base.t_role
+        <where>
+            <if test="roleId != null">
+                and ROLE_ID = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and ROLE_NAME = #{roleName}
+            </if>
+            <if test="remark != null and remark != ''">
+                and REMARK = #{remark}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and MODIFY_TIME = #{modifyTime}
+            </if>
+        </where>
+    </select>
+    <select id="queryList" resultMap="TRoleMap">
+        select
+          ROLE_ID, ROLE_NAME, REMARK, CREATE_TIME, MODIFY_TIME
+        from k_base.t_role
+        <where>
+            <if test="roleName != null and roleName != ''">
+                and ROLE_NAME = #{roleName}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                <![CDATA[
+                     and CREATE_TIME > #{createTime}
+                ]]>
+            </if>
+            <if test="modifyTime != null and modifyTime != ''">
+                <![CDATA[
+                  and MODIFY_TIME < #{modifyTime}
+                ]]>
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="roleId" useGeneratedKeys="true">
+        insert into k_base.t_role(ROLE_NAME, REMARK, CREATE_TIME, MODIFY_TIME)
+        values (#{roleName}, #{remark}, #{createTime}, #{modifyTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.t_role
+        <set>
+            <if test="roleName != null and roleName != ''">
+                ROLE_NAME = #{roleName},
+            </if>
+            <if test="remark != null and remark != ''">
+                REMARK = #{remark},
+            </if>
+            <if test="createTime != null and createTime != ''">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifyTime != null and modifyTime != ''">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where ROLE_ID = #{roleId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.t_role where ROLE_ID = #{roleId}
+    </delete>
+    <delete id="deleteByIds" parameterType="java.util.List">
+         delete from k_base.t_role where ROLE_ID in
+         <foreach collection="roleIds" item="id" separator="," open="(" close=")" >
+             #{id, jdbcType=INTEGER}
+         </foreach>
+    </delete>
+
+</mapper>

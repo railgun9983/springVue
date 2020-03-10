@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.TMenuDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.TMenu" id="TMenuMap">
+        <result property="menuId" column="MENU_ID" jdbcType="INTEGER"/>
+        <result property="parentId" column="PARENT_ID" jdbcType="INTEGER"/>
+        <result property="menuName" column="MENU_NAME" jdbcType="VARCHAR"/>
+        <result property="path" column="PATH" jdbcType="VARCHAR"/>
+        <result property="component" column="COMPONENT" jdbcType="VARCHAR"/>
+        <result property="perms" column="PERMS" jdbcType="VARCHAR"/>
+        <result property="icon" column="ICON" jdbcType="VARCHAR"/>
+        <result property="type" column="TYPE" jdbcType="VARCHAR"/>
+        <result property="orderNum" column="ORDER_NUM" jdbcType="OTHER"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="MODIFY_TIME" jdbcType="TIMESTAMP"/>
+        <result property="isShow" column="IS_SHOW" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TMenuMap">
+        select
+          MENU_ID, PARENT_ID, MENU_NAME, PATH, COMPONENT, PERMS, ICON, TYPE, ORDER_NUM, CREATE_TIME, MODIFY_TIME, IS_SHOW
+        from k_base.t_menu
+        where MENU_ID = #{menuId}
+    </select>
+
+    <!--ids查询-->
+    <select id="queryAllByUserId" resultMap="TMenuMap">
+
+            SELECT
+            t_menu.MENU_ID,
+            t_menu.PARENT_ID,
+            t_menu.MENU_NAME,
+            t_menu.PATH,
+            t_menu.COMPONENT,
+            t_menu.PERMS,
+            t_menu.ICON,
+            t_menu.TYPE,
+            t_menu.ORDER_NUM,
+            t_menu.IS_SHOW
+            FROM
+                (
+                    (
+                        t_role
+                        LEFT JOIN t_user_role ON t_user_role.ROLE_ID = t_role.ROLE_ID
+                    )
+                    LEFT JOIN t_role_menu ON t_role_menu.ROLE_ID = t_role.ROLE_ID
+                )
+            LEFT JOIN t_menu ON t_role_menu.MENU_ID = t_menu.MENU_ID
+            WHERE
+                t_user_role.USER_ID = #{userId}
+            ORDER BY
+                t_menu.MENU_ID ASC,
+                t_menu.ORDER_NUM ASC
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TMenuMap">
+        select
+          MENU_ID, PARENT_ID, MENU_NAME, PATH, COMPONENT, PERMS, ICON, TYPE, ORDER_NUM, CREATE_TIME, MODIFY_TIME, IS_SHOW
+        from k_base.t_menu
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TMenuMap">
+        select
+          MENU_ID, PARENT_ID, MENU_NAME, PATH, COMPONENT, PERMS, ICON, TYPE, ORDER_NUM, CREATE_TIME, MODIFY_TIME, IS_SHOW
+        from k_base.t_menu
+        <where>
+            <if test="menuId != null">
+                and MENU_ID = #{menuId}
+            </if>
+            <if test="parentId != null">
+                and PARENT_ID = #{parentId}
+            </if>
+            <if test="menuName != null and menuName != ''">
+                and MENU_NAME = #{menuName}
+            </if>
+            <if test="path != null and path != ''">
+                and PATH = #{path}
+            </if>
+            <if test="component != null and component != ''">
+                and COMPONENT = #{component}
+            </if>
+            <if test="perms != null and perms != ''">
+                and PERMS = #{perms}
+            </if>
+            <if test="icon != null and icon != ''">
+                and ICON = #{icon}
+            </if>
+            <if test="type != null and type != ''">
+                and TYPE = #{type}
+            </if>
+            <if test="orderNum != null">
+                and ORDER_NUM = #{orderNum}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and MODIFY_TIME = #{modifyTime}
+            </if>
+            <if test="isShow != null">
+                and IS_SHOW = #{isShow}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="menuId" useGeneratedKeys="true">
+        insert into k_base.t_menu(PARENT_ID, MENU_NAME, PATH, COMPONENT, PERMS, ICON, TYPE, ORDER_NUM, CREATE_TIME, MODIFY_TIME, IS_SHOW)
+        values (#{parentId}, #{menuName}, #{path}, #{component}, #{perms}, #{icon}, #{type}, #{orderNum}, #{createTime}, #{modifyTime}, #{isShow})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.t_menu
+        <set>
+            <if test="parentId != null">
+                PARENT_ID = #{parentId},
+            </if>
+            <if test="menuName != null and menuName != ''">
+                MENU_NAME = #{menuName},
+            </if>
+            <if test="path != null and path != ''">
+                PATH = #{path},
+            </if>
+            <if test="component != null and component != ''">
+                COMPONENT = #{component},
+            </if>
+            <if test="perms != null and perms != ''">
+                PERMS = #{perms},
+            </if>
+            <if test="icon != null and icon != ''">
+                ICON = #{icon},
+            </if>
+            <if test="type != null and type != ''">
+                TYPE = #{type},
+            </if>
+            <if test="orderNum != null">
+                ORDER_NUM = #{orderNum},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="isShow != null">
+                IS_SHOW = #{isShow},
+            </if>
+        </set>
+        where MENU_ID = #{menuId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.t_menu where MENU_ID = #{menuId}
+    </delete>
+    <delete id="deleteByIds">
+        delete from k_base.t_menu where MENU_ID
+        in #{menuId}
+    </delete>
+
+</mapper>

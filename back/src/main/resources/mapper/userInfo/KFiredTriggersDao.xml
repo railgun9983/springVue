@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.KFiredTriggersDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.KFiredTriggers" id="KFiredTriggersMap">
+        <result property="schedName" column="SCHED_NAME" jdbcType="VARCHAR"/>
+        <result property="entryId" column="ENTRY_ID" jdbcType="VARCHAR"/>
+        <result property="triggerName" column="TRIGGER_NAME" jdbcType="VARCHAR"/>
+        <result property="triggerGroup" column="TRIGGER_GROUP" jdbcType="VARCHAR"/>
+        <result property="instanceName" column="INSTANCE_NAME" jdbcType="VARCHAR"/>
+        <result property="firedTime" column="FIRED_TIME" jdbcType="INTEGER"/>
+        <result property="schedTime" column="SCHED_TIME" jdbcType="INTEGER"/>
+        <result property="priority" column="PRIORITY" jdbcType="INTEGER"/>
+        <result property="state" column="STATE" jdbcType="VARCHAR"/>
+        <result property="jobName" column="JOB_NAME" jdbcType="VARCHAR"/>
+        <result property="jobGroup" column="JOB_GROUP" jdbcType="VARCHAR"/>
+        <result property="isNonconcurrent" column="IS_NONCONCURRENT" jdbcType="VARCHAR"/>
+        <result property="requestsRecovery" column="REQUESTS_RECOVERY" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="KFiredTriggersMap">
+        select
+          SCHED_NAME, ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, INSTANCE_NAME, FIRED_TIME, SCHED_TIME, PRIORITY, STATE, JOB_NAME, JOB_GROUP, IS_NONCONCURRENT, REQUESTS_RECOVERY
+        from k_base.k_fired_triggers
+        where SCHED_NAME = #{schedName}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="KFiredTriggersMap">
+        select
+          SCHED_NAME, ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, INSTANCE_NAME, FIRED_TIME, SCHED_TIME, PRIORITY, STATE, JOB_NAME, JOB_GROUP, IS_NONCONCURRENT, REQUESTS_RECOVERY
+        from k_base.k_fired_triggers
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="KFiredTriggersMap">
+        select
+          SCHED_NAME, ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, INSTANCE_NAME, FIRED_TIME, SCHED_TIME, PRIORITY, STATE, JOB_NAME, JOB_GROUP, IS_NONCONCURRENT, REQUESTS_RECOVERY
+        from k_base.k_fired_triggers
+        <where>
+            <if test="schedName != null and schedName != ''">
+                and SCHED_NAME = #{schedName}
+            </if>
+            <if test="entryId != null and entryId != ''">
+                and ENTRY_ID = #{entryId}
+            </if>
+            <if test="triggerName != null and triggerName != ''">
+                and TRIGGER_NAME = #{triggerName}
+            </if>
+            <if test="triggerGroup != null and triggerGroup != ''">
+                and TRIGGER_GROUP = #{triggerGroup}
+            </if>
+            <if test="instanceName != null and instanceName != ''">
+                and INSTANCE_NAME = #{instanceName}
+            </if>
+            <if test="firedTime != null">
+                and FIRED_TIME = #{firedTime}
+            </if>
+            <if test="schedTime != null">
+                and SCHED_TIME = #{schedTime}
+            </if>
+            <if test="priority != null">
+                and PRIORITY = #{priority}
+            </if>
+            <if test="state != null and state != ''">
+                and STATE = #{state}
+            </if>
+            <if test="jobName != null and jobName != ''">
+                and JOB_NAME = #{jobName}
+            </if>
+            <if test="jobGroup != null and jobGroup != ''">
+                and JOB_GROUP = #{jobGroup}
+            </if>
+            <if test="isNonconcurrent != null and isNonconcurrent != ''">
+                and IS_NONCONCURRENT = #{isNonconcurrent}
+            </if>
+            <if test="requestsRecovery != null and requestsRecovery != ''">
+                and REQUESTS_RECOVERY = #{requestsRecovery}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="schedName" useGeneratedKeys="true">
+        insert into k_base.k_fired_triggers(TRIGGER_NAME, TRIGGER_GROUP, INSTANCE_NAME, FIRED_TIME, SCHED_TIME, PRIORITY, STATE, JOB_NAME, JOB_GROUP, IS_NONCONCURRENT, REQUESTS_RECOVERY)
+        values (#{triggerName}, #{triggerGroup}, #{instanceName}, #{firedTime}, #{schedTime}, #{priority}, #{state}, #{jobName}, #{jobGroup}, #{isNonconcurrent}, #{requestsRecovery})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.k_fired_triggers
+        <set>
+            <if test="triggerName != null and triggerName != ''">
+                TRIGGER_NAME = #{triggerName},
+            </if>
+            <if test="triggerGroup != null and triggerGroup != ''">
+                TRIGGER_GROUP = #{triggerGroup},
+            </if>
+            <if test="instanceName != null and instanceName != ''">
+                INSTANCE_NAME = #{instanceName},
+            </if>
+            <if test="firedTime != null">
+                FIRED_TIME = #{firedTime},
+            </if>
+            <if test="schedTime != null">
+                SCHED_TIME = #{schedTime},
+            </if>
+            <if test="priority != null">
+                PRIORITY = #{priority},
+            </if>
+            <if test="state != null and state != ''">
+                STATE = #{state},
+            </if>
+            <if test="jobName != null and jobName != ''">
+                JOB_NAME = #{jobName},
+            </if>
+            <if test="jobGroup != null and jobGroup != ''">
+                JOB_GROUP = #{jobGroup},
+            </if>
+            <if test="isNonconcurrent != null and isNonconcurrent != ''">
+                IS_NONCONCURRENT = #{isNonconcurrent},
+            </if>
+            <if test="requestsRecovery != null and requestsRecovery != ''">
+                REQUESTS_RECOVERY = #{requestsRecovery},
+            </if>
+        </set>
+        where SCHED_NAME = #{schedName}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.k_fired_triggers where SCHED_NAME = #{schedName}
+    </delete>
+
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.KCalendarsDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.KCalendars" id="KCalendarsMap">
+        <result property="schedName" column="SCHED_NAME" jdbcType="VARCHAR"/>
+        <result property="calendarName" column="CALENDAR_NAME" jdbcType="VARCHAR"/>
+        <result property="calendar" column="CALENDAR" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="KCalendarsMap">
+        select
+          SCHED_NAME, CALENDAR_NAME, CALENDAR
+        from k_base.k_calendars
+        where SCHED_NAME = #{schedName}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="KCalendarsMap">
+        select
+          SCHED_NAME, CALENDAR_NAME, CALENDAR
+        from k_base.k_calendars
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="KCalendarsMap">
+        select
+          SCHED_NAME, CALENDAR_NAME, CALENDAR
+        from k_base.k_calendars
+        <where>
+            <if test="schedName != null and schedName != ''">
+                and SCHED_NAME = #{schedName}
+            </if>
+            <if test="calendarName != null and calendarName != ''">
+                and CALENDAR_NAME = #{calendarName}
+            </if>
+            <if test="calendar != null">
+                and CALENDAR = #{calendar}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="schedName" useGeneratedKeys="true">
+        insert into k_base.k_calendars(CALENDAR)
+        values (#{calendar})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.k_calendars
+        <set>
+            <if test="calendar != null">
+                CALENDAR = #{calendar},
+            </if>
+        </set>
+        where SCHED_NAME = #{schedName}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.k_calendars where SCHED_NAME = #{schedName}
+    </delete>
+
+</mapper>

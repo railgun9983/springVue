@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.KPausedTriggerGrpsDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.KPausedTriggerGrps" id="KPausedTriggerGrpsMap">
+        <result property="schedName" column="SCHED_NAME" jdbcType="VARCHAR"/>
+        <result property="triggerGroup" column="TRIGGER_GROUP" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="KPausedTriggerGrpsMap">
+        select
+          SCHED_NAME, TRIGGER_GROUP
+        from k_base.k_paused_trigger_grps
+        where SCHED_NAME = #{schedName}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="KPausedTriggerGrpsMap">
+        select
+          SCHED_NAME, TRIGGER_GROUP
+        from k_base.k_paused_trigger_grps
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="KPausedTriggerGrpsMap">
+        select
+          SCHED_NAME, TRIGGER_GROUP
+        from k_base.k_paused_trigger_grps
+        <where>
+            <if test="schedName != null and schedName != ''">
+                and SCHED_NAME = #{schedName}
+            </if>
+            <if test="triggerGroup != null and triggerGroup != ''">
+                and TRIGGER_GROUP = #{triggerGroup}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="schedName" useGeneratedKeys="true">
+        insert into k_base.k_paused_trigger_grps()
+        values ()
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.k_paused_trigger_grps
+        <set>
+        </set>
+        where SCHED_NAME = #{schedName}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.k_paused_trigger_grps where SCHED_NAME = #{schedName}
+    </delete>
+
+</mapper>

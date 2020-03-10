@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.TUserDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.TUser" id="TUserMap">
+        <result property="userId" column="USER_ID" jdbcType="INTEGER"/>
+        <result property="username" column="USERNAME" jdbcType="VARCHAR"/>
+        <result property="password" column="PASSWORD" jdbcType="VARCHAR"/>
+        <result property="deptId" column="DEPT_ID" jdbcType="INTEGER"/>
+        <result property="email" column="EMAIL" jdbcType="VARCHAR"/>
+        <result property="mobile" column="MOBILE" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="MODIFY_TIME" jdbcType="TIMESTAMP"/>
+        <result property="lastLoginTime" column="LAST_LOGIN_TIME" jdbcType="TIMESTAMP"/>
+        <result property="ssex" column="SSEX" jdbcType="VARCHAR"/>
+        <result property="description" column="DESCRIPTION" jdbcType="VARCHAR"/>
+        <result property="avatar" column="AVATAR" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TUserMap">
+        select
+          t_user.USER_ID, USERNAME, PASSWORD, t_user.DEPT_ID, EMAIL, MOBILE, STATUS, t_user.CREATE_TIME, t_user.MODIFY_TIME, LAST_LOGIN_TIME, SSEX, DESCRIPTION, AVATAR,
+					t_dept.DEPT_NAME, GROUP_CONCAT(t_role.ROLE_NAME) as ROLE_NAME
+        from k_base.t_user LEFT JOIN k_base.t_dept on k_base.t_user.DEPT_ID = k_base.t_dept.DEPT_ID,
+							t_user_role LEFT JOIN t_role on t_user_role.ROLE_ID = t_role.ROLE_ID
+        where k_base.t_user.USER_ID = #{userId} and t_user.USER_ID = t_user_role.USER_ID
+    </select>
+
+    <!--查询单个-->
+    <select id="queryByUserName" resultMap="TUserMap">
+        select
+          USER_ID, USERNAME, PASSWORD, DEPT_ID, EMAIL, MOBILE, STATUS, CREATE_TIME, MODIFY_TIME, LAST_LOGIN_TIME, SSEX, DESCRIPTION, AVATAR
+        from k_base.t_user
+        where USERNAME = #{username}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TUserMap">
+        select
+          USER_ID, USERNAME, PASSWORD, DEPT_ID, EMAIL, MOBILE, STATUS, CREATE_TIME, MODIFY_TIME, LAST_LOGIN_TIME, SSEX, DESCRIPTION, AVATAR
+        from k_base.t_user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultType="com.kk.novel.userInfo.entity.TUser" parameterType="com.kk.novel.userInfo.entity.TUser">
+        select
+        t_user.USER_ID, USERNAME, PASSWORD, DEPT_ID, EMAIL, MOBILE, STATUS, CREATE_TIME, MODIFY_TIME, LAST_LOGIN_TIME, SSEX, DESCRIPTION, AVATAR, GROUP_CONCAT(t_user_role.role_id) roleId
+        from k_base.t_user left join k_base.t_user_role on t_user.USER_ID = t_user_role.USER_ID
+        <where>
+            <if test="userId != null">
+                and t_user.USER_ID = #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                and USERNAME = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and PASSWORD = #{password}
+            </if>
+            <if test="deptId != null">
+                and DEPT_ID = #{deptId}
+            </if>
+            <if test="email != null and email != ''">
+                and EMAIL = #{email}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and MOBILE = #{mobile}
+            </if>
+            <if test="status != null and status != ''">
+                and STATUS = #{status}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                <![CDATA[
+                     and CREATE_TIME > #{createTime}
+                ]]>
+            </if>
+            <if test="modifyTime != null and modifyTime != ''">
+                <![CDATA[
+                  and MODIFY_TIME < #{modifyTime}
+                ]]>
+            </if>
+            <if test="lastLoginTime != null">
+                and LAST_LOGIN_TIME = #{lastLoginTime}
+            </if>
+            <if test="ssex != null and ssex != ''">
+                and SSEX = #{ssex}
+            </if>
+            <if test="description != null and description != ''">
+                and DESCRIPTION = #{description}
+            </if>
+            <if test="avatar != null and avatar != ''">
+                and AVATAR = #{avatar}
+            </if>
+        </where>
+        group by
+        t_user.USER_ID, USERNAME, PASSWORD, DEPT_ID, EMAIL, MOBILE, STATUS, CREATE_TIME, MODIFY_TIME, LAST_LOGIN_TIME, SSEX, DESCRIPTION, AVATAR
+    </select>
+
+    <select id="getRoleById" resultType="java.lang.String">
+        SELECT
+        t_role.ROLE_NAME
+        FROM
+        t_user_role  LEFT JOIN
+        t_role on t_user_role.ROLE_ID = t_role.ROLE_ID
+        WHERE t_user_role.USER_ID = #{userId};
+    </select>
+
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into k_base.t_user(USERNAME, PASSWORD, DEPT_ID, EMAIL, MOBILE, STATUS, CREATE_TIME, MODIFY_TIME, LAST_LOGIN_TIME, SSEX, DESCRIPTION, AVATAR)
+        values (#{username}, #{password}, #{deptId}, #{email}, #{mobile}, #{status}, #{createTime}, #{modifyTime}, #{lastLoginTime}, #{ssex}, #{description}, #{avatar})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.t_user
+        <set>
+            <if test="username != null and username != ''">
+                USERNAME = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                PASSWORD = #{password},
+            </if>
+            <if test="deptId != null">
+                DEPT_ID = #{deptId},
+            </if>
+            <if test="email != null and email != ''">
+                EMAIL = #{email},
+            </if>
+            <if test="mobile != null and mobile != ''">
+                MOBILE = #{mobile},
+            </if>
+            <if test="status != null and status != ''">
+                STATUS = #{status},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="lastLoginTime != null">
+                LAST_LOGIN_TIME = #{lastLoginTime},
+            </if>
+            <if test="ssex != null and ssex != ''">
+                SSEX = #{ssex},
+            </if>
+            <if test="description != null and description != ''">
+                DESCRIPTION = #{description},
+            </if>
+            <if test="avatar != null and avatar != ''">
+                AVATAR = #{avatar},
+            </if>
+        </set>
+        where USER_ID = #{userId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.t_user where USER_ID = #{userId}
+    </delete>
+    <delete id="deleteByIds">
+        delete from k_base.t_user where USER_ID in (#{ids})
+    </delete>
+
+</mapper>

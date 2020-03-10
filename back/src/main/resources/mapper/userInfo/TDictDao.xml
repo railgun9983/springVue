@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.TDictDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.TDict" id="TDictMap">
+        <result property="dictId" column="DICT_ID" jdbcType="INTEGER"/>
+        <result property="keyy" column="KEYY" jdbcType="INTEGER"/>
+        <result property="valuee" column="VALUEE" jdbcType="VARCHAR"/>
+        <result property="fieldName" column="FIELD_NAME" jdbcType="VARCHAR"/>
+        <result property="tableName" column="TABLE_NAME" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TDictMap">
+        select
+          DICT_ID, KEYY, VALUEE, FIELD_NAME, TABLE_NAME
+        from k_base.t_dict
+        where DICT_ID = #{dictId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TDictMap">
+        select
+          DICT_ID, KEYY, VALUEE, FIELD_NAME, TABLE_NAME
+        from k_base.t_dict
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TDictMap">
+        select
+          DICT_ID, KEYY, VALUEE, FIELD_NAME, TABLE_NAME
+        from k_base.t_dict
+        <where>
+            <if test="dictId != null">
+                and DICT_ID = #{dictId}
+            </if>
+            <if test="keyy != null">
+                and KEYY = #{keyy}
+            </if>
+            <if test="valuee != null and valuee != ''">
+                and VALUEE = #{valuee}
+            </if>
+            <if test="fieldName != null and fieldName != ''">
+                and FIELD_NAME = #{fieldName}
+            </if>
+            <if test="tableName != null and tableName != ''">
+                and TABLE_NAME = #{tableName}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="dictId" useGeneratedKeys="true">
+        insert into k_base.t_dict(KEYY, VALUEE, FIELD_NAME, TABLE_NAME)
+        values (#{keyy}, #{valuee}, #{fieldName}, #{tableName})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.t_dict
+        <set>
+            <if test="keyy != null">
+                KEYY = #{keyy},
+            </if>
+            <if test="valuee != null and valuee != ''">
+                VALUEE = #{valuee},
+            </if>
+            <if test="fieldName != null and fieldName != ''">
+                FIELD_NAME = #{fieldName},
+            </if>
+            <if test="tableName != null and tableName != ''">
+                TABLE_NAME = #{tableName},
+            </if>
+        </set>
+        where DICT_ID = #{dictId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.t_dict where DICT_ID = #{dictId}
+    </delete>
+
+</mapper>

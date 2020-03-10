@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.TDeptDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.TDept" id="TDeptMap">
+        <result property="deptId" column="DEPT_ID" jdbcType="INTEGER"/>
+        <result property="parentId" column="PARENT_ID" jdbcType="INTEGER"/>
+        <result property="deptName" column="DEPT_NAME" jdbcType="VARCHAR"/>
+        <result property="orderNum" column="ORDER_NUM" jdbcType="OTHER"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="modifyTime" column="MODIFY_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TDeptMap">
+        select
+          DEPT_ID, PARENT_ID, DEPT_NAME, ORDER_NUM, CREATE_TIME, MODIFY_TIME
+        from k_base.t_dept
+        where DEPT_ID = #{deptId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TDeptMap">
+        select
+          DEPT_ID, PARENT_ID, DEPT_NAME, ORDER_NUM, CREATE_TIME, MODIFY_TIME
+        from k_base.t_dept
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TDeptMap">
+        select
+          DEPT_ID, PARENT_ID, DEPT_NAME, ORDER_NUM, CREATE_TIME, MODIFY_TIME
+        from k_base.t_dept
+        <where>
+            <if test="deptId != null">
+                and DEPT_ID = #{deptId}
+            </if>
+            <if test="parentId != null">
+                and PARENT_ID = #{parentId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and DEPT_NAME = #{deptName}
+            </if>
+            <if test="orderNum != null">
+                and ORDER_NUM = #{orderNum}
+            </if>
+            <if test="createTime != null and createTime != ''">
+                <![CDATA[
+                     and CREATE_TIME > #{createTime}
+                ]]>
+            </if>
+            <if test="modifyTime != null and modifyTime != ''">
+                <![CDATA[
+                  and MODIFY_TIME < #{modifyTime}
+                ]]>
+            </if>
+        </where>
+    </select>
+    <select id="queryAllDepet" resultType="com.kk.novel.userInfo.entity.TDept">
+        select
+          DEPT_ID, PARENT_ID, DEPT_NAME, ORDER_NUM, CREATE_TIME, MODIFY_TIME
+        from k_base.t_dept
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="deptId" useGeneratedKeys="true">
+        insert into k_base.t_dept(PARENT_ID, DEPT_NAME, ORDER_NUM, CREATE_TIME, MODIFY_TIME)
+        values (#{parentId}, #{deptName}, #{orderNum}, #{createTime}, #{modifyTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.t_dept
+        <set>
+            <if test="parentId != null">
+                PARENT_ID = #{parentId},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                DEPT_NAME = #{deptName},
+            </if>
+            <if test="orderNum != null">
+                ORDER_NUM = #{orderNum},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+        </set>
+        where DEPT_ID = #{deptId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.t_dept where DEPT_ID = #{deptId}
+    </delete>
+    <delete id="deleteByIds">
+         delete from k_base.t_dept where DEPT_ID in (#{deptId})
+    </delete>
+
+</mapper>

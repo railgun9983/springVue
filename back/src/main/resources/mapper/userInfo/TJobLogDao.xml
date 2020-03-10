@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.TJobLogDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.TJobLog" id="TJobLogMap">
+        <result property="logId" column="LOG_ID" jdbcType="INTEGER"/>
+        <result property="jobId" column="JOB_ID" jdbcType="INTEGER"/>
+        <result property="beanName" column="BEAN_NAME" jdbcType="VARCHAR"/>
+        <result property="methodName" column="METHOD_NAME" jdbcType="VARCHAR"/>
+        <result property="params" column="PARAMS" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="error" column="ERROR" jdbcType="VARCHAR"/>
+        <result property="times" column="TIMES" jdbcType="NUMERIC"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TJobLogMap">
+        select
+          LOG_ID, JOB_ID, BEAN_NAME, METHOD_NAME, PARAMS, STATUS, ERROR, TIMES, CREATE_TIME
+        from k_base.t_job_log
+        where LOG_ID = #{logId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TJobLogMap">
+        select
+          LOG_ID, JOB_ID, BEAN_NAME, METHOD_NAME, PARAMS, STATUS, ERROR, TIMES, CREATE_TIME
+        from k_base.t_job_log
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TJobLogMap">
+        select
+          LOG_ID, JOB_ID, BEAN_NAME, METHOD_NAME, PARAMS, STATUS, ERROR, TIMES, CREATE_TIME
+        from k_base.t_job_log
+        <where>
+            <if test="logId != null">
+                and LOG_ID = #{logId}
+            </if>
+            <if test="jobId != null">
+                and JOB_ID = #{jobId}
+            </if>
+            <if test="beanName != null and beanName != ''">
+                and BEAN_NAME = #{beanName}
+            </if>
+            <if test="methodName != null and methodName != ''">
+                and METHOD_NAME = #{methodName}
+            </if>
+            <if test="params != null and params != ''">
+                and PARAMS = #{params}
+            </if>
+            <if test="status != null and status != ''">
+                and STATUS = #{status}
+            </if>
+            <if test="error != null and error != ''">
+                and ERROR = #{error}
+            </if>
+            <if test="times != null">
+                and TIMES = #{times}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="logId" useGeneratedKeys="true">
+        insert into k_base.t_job_log(JOB_ID, BEAN_NAME, METHOD_NAME, PARAMS, STATUS, ERROR, TIMES, CREATE_TIME)
+        values (#{jobId}, #{beanName}, #{methodName}, #{params}, #{status}, #{error}, #{times}, #{createTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.t_job_log
+        <set>
+            <if test="jobId != null">
+                JOB_ID = #{jobId},
+            </if>
+            <if test="beanName != null and beanName != ''">
+                BEAN_NAME = #{beanName},
+            </if>
+            <if test="methodName != null and methodName != ''">
+                METHOD_NAME = #{methodName},
+            </if>
+            <if test="params != null and params != ''">
+                PARAMS = #{params},
+            </if>
+            <if test="status != null and status != ''">
+                STATUS = #{status},
+            </if>
+            <if test="error != null and error != ''">
+                ERROR = #{error},
+            </if>
+            <if test="times != null">
+                TIMES = #{times},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+        </set>
+        where LOG_ID = #{logId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.t_job_log where LOG_ID = #{logId}
+    </delete>
+
+</mapper>

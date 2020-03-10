@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kk.novel.userInfo.dao.TRoleMenuDao">
+
+    <resultMap type="com.kk.novel.userInfo.entity.TRoleMenu" id="TRoleMenuMap">
+        <result property="roleId" column="ROLE_ID" jdbcType="INTEGER"/>
+        <result property="menuId" column="MENU_ID" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TRoleMenuMap">
+        select
+          ROLE_ID, MENU_ID
+        from k_base.t_role_menu
+        where ROLE_ID = #{roleId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TRoleMenuMap">
+        select
+          ROLE_ID, MENU_ID
+        from k_base.t_role_menu
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TRoleMenuMap">
+        select
+          ROLE_ID, MENU_ID
+        from k_base.t_role_menu
+        <where>
+            <if test="roleId != null">
+                and ROLE_ID = #{roleId}
+            </if>
+            <if test="menuId != null">
+                and MENU_ID = #{menuId}
+            </if>
+        </where>
+    </select>
+    <select id="queryByRoleId" resultType="java.lang.Integer">
+        select MENU_ID
+        from k_base.t_role_menu
+        <where>
+            <if test="roleId != null">
+                and ROLE_ID = #{roleId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="roleId" useGeneratedKeys="true">
+        insert into k_base.t_role_menu()
+        values ()
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update k_base.t_role_menu
+        <set>
+        </set>
+        where ROLE_ID = #{roleId}
+    </update>
+    <insert id="InsertRoleMenu">
+        <if test="roleId != null">
+            delete from k_base.t_role_menu where ROLE_ID = #{roleId};
+        </if>
+        insert into k_base.t_role_menu(ROLE_ID, MENU_ID)
+        values
+        <foreach collection="menuIds" item="emp" separator=",">
+            (#{roleId},#{emp, jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from k_base.t_role_menu where ROLE_ID = #{roleId}
+    </delete>
+    <delete id="deleteByIds" parameterType="java.util.List">
+         delete from k_base.t_role_menu where ROLE_ID in
+          <foreach collection="roleIds" item="id" separator="," open="(" close=")" >
+              #{id, jdbcType=INTEGER}
+          </foreach>
+    </delete>
+
+</mapper>
